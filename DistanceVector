@@ -3,4 +3,16 @@
 #Importing the needed python library for this assiginment.
 import sys
 import copy
-from collections import defaultdict 
+from collections import defaultdict
+
+INF = float('inf')
+
+#Defining the Router class for the Distance Vector
+class Router:
+    # Creating the consturntion funciton for the routing class
+    def __init__(self, router_name):
+        self.router_name = router_name
+        self.neighbors = {}
+        self.routing_cost = {}
+        self.distance_table = defaultdict(dict)
+        
