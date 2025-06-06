@@ -192,3 +192,14 @@ def apply_updated_routers(routers, updates):
         else:
             routers[u].neighbors[v] = total_cost
             routers[v].neighbors[u] = total_cost
+
+#Creating the main function.
+if __name__ == "__main__":
+    routers, updates_array = prase_network_input() #Acessing the prase_network_input function.
+    run_DistanceVector_algorithm(routers) #Acessing the run_DistanceVector_algorithm function.
+    # Using the if condition if there are any updates.
+    if updates_array:
+        # Acessing the apply_updated_routers
+        apply_updated_routers(routers, updates_array)
+        # Acessing the run_DistanceVector_algorithm
+        run_DistanceVector_algorithm(routers)
