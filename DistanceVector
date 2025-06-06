@@ -15,4 +15,26 @@ class Router:
         self.neighbors = {}
         self.routing_cost = {}
         self.distance_table = defaultdict(dict)
-        
+    
+    # Creating the initialize_rotuer function that have two paprertmers self and router.
+    def initialize_router(self, routers):
+        # Usng the for loop to inisilize the distance table for all the destivnation throguh all neighbours.
+        for destination_router in routers:
+            for neighbors in routers:
+                if neighbors != self.router_name:
+                    self.distance_table[destination_router][neighbors] = INF
+
+        # Usng the for loop to inizlise the routning cost to all the destioantion.
+        for destination_router in routers:
+            if destination_router == self.router_name:
+                self.routing_cost[destination_router] = 0 #0 cost to reach to self.
+            elif destination_router in self.neighbors:
+                self.routing_cost[destination_router] = self.neighbors[destination_router]
+            else: 
+                self.routing_cost[destination_router] = INF
+            
+            for neighbors in self.neighbors:
+                self.distance_table[destination_router][neighbors] = INF
+        # Using the for loop to set the cost to each neighnbour that goes throguh itelsef.
+        for neighbors in self.neighbors:
+            self.distance_table[neighbors][neighbors] = self.neighbors[neighbors]
