@@ -106,3 +106,40 @@ class Router:
             else:
                 print(f"{destination_router},{next_hop},{minimum_cost}") #Else printing the values of destination router, next hop and mininmum cost.
         print()
+
+    #Creating the function with name prase_network_input that reads all the lines from input, and then splites the list of the input in sepreated individual lines. 
+    def prase_network_input():
+        routers = {} #Inisiling the router variable.
+        raw_input_data = sys.stdin.read().strip().splitlines() #Reading all the inputs as list of lines
+
+        i = 0 #Inisling the i to zero.
+        # Using the while loop to until the START word is been found.
+        while raw_input_data[i] != "START":
+            routers[raw_input_data[i]] = Router(raw_input_data[i])
+            i += 1
+        i += 1
+
+        #Using the while looop to read the initial toplogy until the word UPDATE is founded.
+        while raw_input_data[i] != "UPDATE":
+            u, v, total_cost = raw_input_data[i].split()
+            total_cost = int(total_cost)
+            # Using the if condition when the cost is not -1 so then it iwll create bidirectional vecotr between u and v.
+            if total_cost != -1:
+                routers[u].neighbors[v] = total_cost
+                routers[v].neighbors[u] = total_cost
+            #If its not the -1 then the link is been removed.
+            else:
+                routers[u].neighbors.pop(v, None)
+                routers[v].neighbors.pop(u, None)
+            i += 1
+        i += 1
+
+        # Creating the initial empty arry to update.
+        updates_array = []
+        # Using the while loop to get updates until the word END is been captured.
+        while raw_input_data[i] != "END":
+            u, v, total_cost = raw_input_data[i].split()
+            total_cost = int(total_cost)
+            updates_array.append((u, v, total_cost))
+            i += 1
+        return routers, updates_array
