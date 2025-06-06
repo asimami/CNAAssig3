@@ -65,3 +65,24 @@ class Router:
                 self.routing_cost[destination_router] = minimum_cost
                 table_updated = True # updating the table with new cost
         return table_updated #Returning the updated routing table after getting the new cost.
+
+    # Creating the function that prints out the distance table for all the X, Y and Z routers.
+    def printing_distance_table(self, routers, time_step):
+        print(f"Distance Table of router {self.router_name} at t={time_step}:")
+        table_headers = sorted(routers.keys())
+        table_headers.remove(self.router_name)
+        via = sorted(routers.keys())
+        via.remove(self.router_name)
+
+        #Ptining the headers of the distance tables
+        routing_via_header = " " + "".join(f"{v:>6}" for v in via)
+        print(routing_via_header)
+
+        #Printing each row in the distance table.
+        for destination_router in table_headers:
+            table_row = f"{destination_router:<5}"
+            for v in via:
+                total_cost = self.distance_table[destination_router].get(v, INF)
+                table_row += f"{('INF' if total_cost == INF else str(total_cost)):>6}"
+            print(table_row)
+        print()
