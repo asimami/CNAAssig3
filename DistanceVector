@@ -173,3 +173,22 @@ def run_DistanceVector_algorithm(routers):
     for router_name in sorted(routers):
         routers[router_name].printing_routing_table(routers)
 
+#Creaitng the funtion with name apply_updated_routers that takes two aparmeter. This function basically apply the new router once evertying is updated in final stage.
+def apply_updated_routers(routers, updates):
+    # Using the for loop to iterater over all the updates in the lsit.
+    for u, v, total_cost in updates:
+        # Creating the u if it is not in the router
+        if u not in routers:
+            routers[u] = Router(u)
+        # Creating the v if it is not in the router
+        if v not in routers:
+            routers[v] = Router(v)
+
+        # If the total_cost is -1 then remove the path
+        if total_cost == -1:
+            routers[u].neighbors.pop(v, None)
+            routers[v].neighbors.pop(u, None)
+        # If its not -1 then make the path bidriecrtional.
+        else:
+            routers[u].neighbors[v] = total_cost
+            routers[v].neighbors[u] = total_cost
