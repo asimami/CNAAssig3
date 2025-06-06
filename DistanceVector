@@ -147,7 +147,7 @@ def prase_network_input():
 # Creating the function with name run_DistanceVector_alogrithm that run the DV algo until no more router chnaging in routing table anymore.
 def run_DistanceVector_algorithm(routers):
     # Using the for loop to initilize the routing cost table and distance table for individual routers.
-    for router in routers.value():
+    for router in routers.values():
         router.routing_cost = {}
         router.distance_table = defaultdict(dict)
         router.initilize_router(routers)
