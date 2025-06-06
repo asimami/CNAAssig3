@@ -86,3 +86,23 @@ class Router:
                 table_row += f"{('INF' if total_cost == INF else str(total_cost)):>6}"
             print(table_row)
         print()
+    # Creating the function with name printing_routing_table that prints out the routing table for all the routers X, Y and Z. 
+    def printing_routing_table(self, routers):
+        print(f"Routing Table of router {self.router_name}:")
+        # Sorting the routers list expecte the router itself.
+        destinations = sorted([r for r in routers if r != self.router_name])
+        # Using the for loop to loop the destination for each routers
+        for destination_router in destinations:
+            minimum_cost = self.routing_cost[destination_router]
+            next_hop = None
+            # Using the for loop to check the each niegbours that are in sorted orders to get the shorttest path 
+            for neighbors in sorted(self.neighbors):
+                if self.distance_table[destination_router].get(neighbors, INF) == minimum_cost:
+                    next_hop = neighbors
+                    break
+            if minimum_cost == INF:
+                # Printing the INF if the destination is not reachable via that route.
+                print(f"{destination_router}, INF,INF")
+            else:
+                print(f"{destination_router},{next_hop},{minimum_cost}") #Else printing the values of destination router, next hop and mininmum cost.
+        print()
