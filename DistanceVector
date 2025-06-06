@@ -38,3 +38,30 @@ class Router:
         # Using the for loop to set the cost to each neighnbour that goes throguh itelsef.
         for neighbors in self.neighbors:
             self.distance_table[neighbors][neighbors] = self.neighbors[neighbors]
+
+    # Creating the function with name updating_routing_cost which updates the routing cost everytime when find shortest path.
+    def updating_routing_cost(self, router_network):
+        table_updated = False #Putting the update false inisilly
+
+        # Using the for loop to iterato over all the routers present in the network.
+        for destination_router in router_network:
+            if destination_router == self.router_name:
+                continue
+            # Inisliign the minmimum_cost anf tthe next hop
+            minimum_cost = INF
+            next_hop = None
+            # Using the for loop to check the cost to reach the destination router via each neighbours present in the network.
+            for neighbors in self.neighbors:
+                cost_to_reach_neighbor = self.neighbors[neighbors]
+                cost_coming_from_neighbor = router_network[router_network].routing_cost.get(destination_router, INF)
+                final_cost = cost_to_reach_neighbor + cost_coming_from_neighbor
+                self.distance_table[destination_router][neighbors] = final_cost
+                # Using the if condition to cehck if the cost is better then previous cost.
+                if final_cost < minimum_cost or (final_cost == minimum_cost and (next_hop is None or neighbors < next_hop)):
+                    minimum_cost = final_cost
+                    next_hop = neighbors
+            # If the minimum cost is found update the cost in the tbale
+            if self.routing_cost.get(destination_router, INF) != minimum_cost:
+                self.routing_cost[destination_router] = minimum_cost
+                table_updated = True # updating the table with new cost
+        return table_updated #Returning the updated routing table after getting the new cost.
