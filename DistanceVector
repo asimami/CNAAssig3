@@ -81,7 +81,8 @@ class Router:
         #via = sorted(routers.keys())
         #via.remove(self.router_name)
         destinations = sorted([r for r in routers if r != self.router_name])
-        via = sorted(self.neighbors.keys())
+        via = sorted([r for r in routers if r != self.router_name])
+
 
         print("     " + "  ".join(f"{v:>4}" for v in via))
 
