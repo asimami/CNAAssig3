@@ -13,32 +13,39 @@ class Router:
     def __init__(self, router_name):
         self.router_name = router_name
         self.neighbors = {}
-        self.routing_cost = {}
         self.distance_table = defaultdict(dict)
+        self.routing_cost = {}
     
     # Creating the initialize_rotuer function that have two paprertmers self and router.
     def initialize_router(self, routers):
+        self.routing_cost = {}
+        self.distance_table = defaultdict(dict)
+
         # Usng the for loop to inisilize the distance table for all the destivnation throguh all neighbours.
         for destination_router in routers:
+            self.routing_cost[destination_router] = INF
             for neighbors in routers:
-                if neighbors != self.router_name:
-                    self.distance_table[destination_router][neighbors] = INF
+                #if neighbors != self.router_name:
+                self.distance_table[destination_router][neighbors] = INF
+        self.routing_cost[self.router_name] = 0
 
         # Usng the for loop to inizlise the routning cost to all the destioantion.
-        for destination_router in routers:
-            if destination_router == self.router_name:
-                self.routing_cost[destination_router] = 0 #0 cost to reach to self.
-            elif destination_router in self.neighbors:
-                self.routing_cost[destination_router] = self.neighbors[destination_router]
-            else: 
-                self.routing_cost[destination_router] = INF
+        #for destination_router in routers:
+         #   if destination_router == self.router_name:
+          #      self.routing_cost[destination_router] = 0 #0 cost to reach to self.
+           # elif destination_router in self.neighbors:
+            #    self.routing_cost[destination_router] = self.neighbors[destination_router]
+            #else: 
+             #   self.routing_cost[destination_router] = INF
             
-            for neighbors in self.neighbors:
-                self.distance_table[destination_router][neighbors] = INF
+            #for neighbors in self.neighbors:
+             #   self.distance_table[destination_router][neighbors] = INF
         # Using the for loop to set the cost to each neighnbour that goes throguh itelsef.
-        for neighbors in self.neighbors:
-            self.distance_table[neighbors][neighbors] = self.neighbors[neighbors]
-
+        #for neighbors in self.neighbors:
+         #   self.distance_table[neighbors][neighbors] = self.neighbors[neighbors]
+        for neighbor, cost in self.neighbors.items():
+            self.routing_cost[neighbor] = cost
+            self.distance_table[neighbor][neighbor] = cost
     # Creating the function with name updating_routing_cost which updates the routing cost everytime when find shortest path.
     def updating_routing_cost(self, router_network):
         table_updated = False #Putting the update false inisilly
@@ -51,7 +58,7 @@ class Router:
             minimum_cost = INF
             next_hop = None
             # Using the for loop to check the cost to reach the destination router via each neighbours present in the network.
-            for neighbors in self.neighbors:
+            for neighbors in sorted(self.neighbors):
                 cost_to_reach_neighbor = self.neighbors[neighbors]
                 cost_coming_from_neighbor = router_network[neighbors].routing_cost.get(destination_router, INF)
                 final_cost = cost_to_reach_neighbor + cost_coming_from_neighbor
@@ -69,21 +76,25 @@ class Router:
     # Creating the function that prints out the distance table for all the X, Y and Z routers.
     def printing_distance_table(self, routers, time_step):
         print(f"Distance Table of router {self.router_name} at t={time_step}:")
-        table_headers = sorted(routers.keys())
-        table_headers.remove(self.router_name)
-        via = sorted(routers.keys())
-        via.remove(self.router_name)
+        #table_headers = sorted(routers.keys())
+        #table_headers.remove(self.router_name)
+        #via = sorted(routers.keys())
+        #via.remove(self.router_name)
+        destinations = sorted([r for r in routers if r != self.router_name])
+        via = sorted(self.neighbors.keys())
+
+        print("  " + " ".join(f"{v:>4}" for v in via))
 
         #Ptining the headers of the distance tables
-        routing_via_header = " " + "".join(f"{v:>6}" for v in via)
-        print(routing_via_header)
+        #routing_via_header = " " + "".join(f"{v:>6}" for v in via)
+        #print(routing_via_header)
 
         #Printing each row in the distance table.
-        for destination_router in table_headers:
+        for destination_router in destinations:
             table_row = f"{destination_router:<5}"
             for v in via:
                 total_cost = self.distance_table[destination_router].get(v, INF)
-                table_row += f"{('INF' if total_cost == INF else str(total_cost)):>6}"
+                table_row += f"{'INF' if total_cost == INF else str(int(total_cost)):>6}"
             print(table_row)
         print()
     # Creating the function with name printing_routing_table that prints out the routing table for all the routers X, Y and Z. 
@@ -93,18 +104,18 @@ class Router:
         destinations = sorted([r for r in routers if r != self.router_name])
         # Using the for loop to loop the destination for each routers
         for destination_router in destinations:
-            minimum_cost = self.routing_cost[destination_router]
+            minimum_cost = self.routing_cost.get(destination_router, INF)
             next_hop = None
             # Using the for loop to check the each niegbours that are in sorted orders to get the shorttest path 
             for neighbors in sorted(self.neighbors):
                 if self.distance_table[destination_router].get(neighbors, INF) == minimum_cost:
                     next_hop = neighbors
                     break
-            if minimum_cost == INF:
+            if minimum_cost == INF or next_hop is None:
                 # Printing the INF if the destination is not reachable via that route.
-                print(f"{destination_router}, INF,INF")
+                print(f"{destination_router},INF,INF")
             else:
-                print(f"{destination_router},{next_hop},{minimum_cost}") #Else printing the values of destination router, next hop and mininmum cost.
+                print(f"{destination_router},{next_hop},{int(minimum_cost)}") #Else printing the values of destination router, next hop and mininmum cost.
         print()
 
     #Creating the function with name prase_network_input that reads all the lines from input, and then splites the list of the input in sepreated individual lines. 
@@ -145,15 +156,16 @@ def prase_network_input():
     return routers, updates_array
 
 # Creating the function with name run_DistanceVector_alogrithm that run the DV algo until no more router chnaging in routing table anymore.
-def run_DistanceVector_algorithm(routers):
+def run_DistanceVector_algorithm(routers, starting_time=0):
     # Using the for loop to initilize the routing cost table and distance table for individual routers.
     for router in routers.values():
-        router.routing_cost = {}
-        router.distance_table = defaultdict(dict)
+        #router.routing_cost = {}
+        #router.distance_table = defaultdict(dict)
         router.initialize_router(routers)
 
+    time_step = starting_time #Inisiling the time_step to zero
     routing_converged = False #Initilising the routing_converged to flase.
-    time_step = 0 #Inisiling the time_step to zero
+    #time_step = 0 #Inisiling the time_step to zero
 
     #Using the while loop to iterater over all teh routers until theere are no updates in the routing table.
     while not routing_converged:
@@ -163,15 +175,22 @@ def run_DistanceVector_algorithm(routers):
 
         # Creating the variable update_array with empty arry.
         updates_array = []
+        previous_cost = {r.router_name: dict(r.routing_cost) for r in routers.values()}
         # Using the for loop for updating the routing cost eveytime.
         for router in routers.values():
-            if router.updating_routing_cost(routers):
+            #if router.updating_routing_cost(routers):
+            router.updating_routing_cost(routers)
+        
+        for router in routers.values():
+            if router.routing_cost != previous_cost[router.router_name]:
                 updates_array.append(True)
         routing_converged = not any(updates_array) #The network gets converged when there is no update avaliable in the routing table.
 
     #Displaying the final routing tbale after all the converged has been succefully completed.
     for router_name in sorted(routers):
         routers[router_name].printing_routing_table(routers)
+
+    return time_step
 
 #Creaitng the funtion with name apply_updated_routers that takes two aparmeter. This function basically apply the new router once evertying is updated in final stage.
 def apply_updated_routers(routers, updates):
@@ -196,10 +215,10 @@ def apply_updated_routers(routers, updates):
 #Creating the main function.
 if __name__ == "__main__":
     routers, updates_array = prase_network_input() #Acessing the prase_network_input function.
-    run_DistanceVector_algorithm(routers) #Acessing the run_DistanceVector_algorithm function.
+    current_timestamp = run_DistanceVector_algorithm(routers) #Acessing the run_DistanceVector_algorithm function.
     # Using the if condition if there are any updates.
     if updates_array:
         # Acessing the apply_updated_routers
         apply_updated_routers(routers, updates_array)
         # Acessing the run_DistanceVector_algorithm
-        run_DistanceVector_algorithm(routers)
+        run_DistanceVector_algorithm(routers, starting_time=current_timestamp)
