@@ -2,7 +2,7 @@
 
 #Importing the needed python library for this assiginment.
 import sys
-import copy
+#import copy
 from collections import defaultdict
 
 INF = float('inf')
