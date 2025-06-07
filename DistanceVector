@@ -59,9 +59,9 @@ class Router:
             next_hop = None
             # Using the for loop to check the cost to reach the destination router via each neighbours present in the network.
             for neighbor in sorted(self.neighbors):
-                cost_to_reach_neighbor = self.neighbors[neighbor]
-                cost_coming_from_neighbor = router_network[neighbor].routing_cost.get(destination_router, INF)
-                final_cost = cost_to_reach_neighbor + cost_coming_from_neighbor
+                cost_to_neighbor = self.neighbors[neighbor]
+                cost_from_neighbor = router_network[neighbor].routing_cost.get(destination_router, INF)
+                final_cost = cost_to_neighbor + cost_from_neighbor
                 self.distance_table[destination_router][neighbor] = final_cost
                 # Using the if condition to cehck if the cost is better then previous cost.
                 if final_cost < minimum_cost or (final_cost == minimum_cost and (next_hop is None or neighbor < next_hop)):
@@ -84,7 +84,7 @@ class Router:
         via = sorted([r for r in routers if r != self.router_name])
 
 
-        print("     " + "  ".join(f"{v:>4}" for v in via))
+        print("       " + "".join(f"{v.rjust(6)}" for v in via))
 
         #Ptining the headers of the distance tables
         #routing_via_header = " " + "".join(f"{v:>6}" for v in via)
@@ -95,7 +95,7 @@ class Router:
             table_row = f"{destination_router:<5}"
             for v in via:
                 total_cost = self.distance_table[destination_router].get(v, INF)
-                table_row += f"{('INF' if total_cost == INF else str(int(total_cost))):>6}"
+                table_row += f"{('INF' if total_cost == INF else str(int(total_cost))).rjust(6)}"
             print(table_row)
         print()
     # Creating the function with name printing_routing_table that prints out the routing table for all the routers X, Y and Z. 
@@ -196,7 +196,7 @@ def run_DistanceVector_algorithm(routers, starting_time=0):
 #Creaitng the funtion with name apply_updated_routers that takes two aparmeter. This function basically apply the new router once evertying is updated in final stage.
 def apply_updated_routers(routers, updates):
     # Using the for loop to iterater over all the updates in the lsit.
-    for u, v, total_cost in updates:
+    for u, v, cost in updates:
         # Creating the u if it is not in the router
         if u not in routers:
             routers[u] = Router(u)
@@ -205,13 +205,13 @@ def apply_updated_routers(routers, updates):
             routers[v] = Router(v)
 
         # If the total_cost is -1 then remove the path
-        if total_cost == -1:
+        if cost == -1:
             routers[u].neighbors.pop(v, None)
             routers[v].neighbors.pop(u, None)
         # If its not -1 then make the path bidriecrtional.
         else:
-            routers[u].neighbors[v] = total_cost
-            routers[v].neighbors[u] = total_cost
+            routers[u].neighbors[v] = cost
+            routers[v].neighbors[u] = cost
 
 #Creating the main function.
 if __name__ == "__main__":
