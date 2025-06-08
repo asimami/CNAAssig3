@@ -265,6 +265,21 @@ if __name__ == "__main__":
         # Acessing the apply_updated_routers
         apply_updated_routers(routers, updates_array)
 
+       
+        for router in routers.values():
+            for dest in routers:
+                for via in routers:
+                    if dest == router.router_name:
+                        router.distance_table[dest][via] = 0
+                    elif via in router.neighbors:
+                        if dest == via:
+                            router.distance_table[dest][via] = router.neighbors[via]
+                        else:
+                            router.distance_table[dest][via] = INF
+                    else:
+                        router.distance_table[dest][via] = INF
+
+
 
         for router_name in sorted(routers):
             routers[router_name].printing_distance_table(routers, current_timestamp)
