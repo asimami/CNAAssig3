@@ -274,6 +274,7 @@ if __name__ == "__main__":
             router.initialize_router(routers)
 
         # Adding the for loop so it prints the current_timestamps after the updates.
+        current_timestamp -= 1
         for router_name in sorted(routers):
             routers[router_name].printing_distance_table(routers, current_timestamp)
         current_timestamp += 1
