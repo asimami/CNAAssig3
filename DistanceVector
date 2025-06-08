@@ -281,5 +281,5 @@ if __name__ == "__main__":
         #current_timestamp += 1
         
         # Acessing the run_DistanceVector_algorithm
-        current_timestamp = run_DistanceVector_algorithm(routers, starting_time=0)
+        current_timestamp = run_DistanceVector_algorithm(routers, starting_time=current_timestamp)
         printing_final_routing_table(routers)
