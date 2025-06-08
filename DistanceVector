@@ -171,10 +171,10 @@ def run_DistanceVector_algorithm(routers, starting_time=0):
     time_step = starting_time #Inisiling the time_step to zero
     #converged = False
 
-    while True:
-        #for router_name in sorted(routers):
-         #   routers[router_name].printing_distance_table(routers, time_step)
-        #time_step += 1
+    #while True:
+    for router_name in sorted(routers):
+        routers[router_name].printing_distance_table(routers, time_step)
+    time_step += 1
 
     # Using the for loop to initilize the routing cost table and distance table for individual routers.
     #for router in routers.values():
@@ -189,7 +189,7 @@ def run_DistanceVector_algorithm(routers, starting_time=0):
     # all_tables = []
     #Using the while loop to iterater over all teh routers until theere are no updates in the routing table.
     # while not routing_converged:
-    #while True:
+    while True:
 
         advertised_costs = {
             router_name: dict(router.routing_cost)
@@ -281,5 +281,5 @@ if __name__ == "__main__":
         #current_timestamp += 1
         
         # Acessing the run_DistanceVector_algorithm
-        run_DistanceVector_algorithm(routers, starting_time=0)
+        current_timestamp = run_DistanceVector_algorithm(routers, starting_time=current_timestamp)
         printing_final_routing_table(routers)
