@@ -15,6 +15,7 @@ class Router:
         self.neighbors = {}
         self.distance_table = defaultdict(dict)
         self.routing_cost = {}
+        self.next_hop = {}
     
     # Creating the initialize_rotuer function that have two paprertmers self and router.
     def initialize_router(self, routers):
@@ -86,6 +87,7 @@ class Router:
             # If the minimum cost is found update the cost in the tbale
             if self.routing_cost.get(destination_router, INF) != minimum_cost:
                 self.routing_cost[destination_router] = minimum_cost
+                self.next_hop[destination_router] = next_hop  
                 table_updated = True # updating the table with new cost
         return table_updated #Returning the updated routing table after getting the new cost.
 
@@ -260,6 +262,13 @@ def apply_updated_routers(routers, updates):
             for dest in routers[v].distance_table:
                 routers[v].distance_table[dest][u] = INF
 
+            for dest in routers[u].routing_cost:
+                if routers[u].next_hop.get(dest) == v:
+                    routers[u].routing_cost[dest] = INF
+
+            for dest in routers[v].routing_cost:
+                if routers[v].next_hop.get(dest) == u:
+                    routers[v].routing_cost[dest] = INF
         # If its not -1 then make the path bidriecrtional.
         else:
             routers[u].neighbors[v] = cost
