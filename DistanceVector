@@ -252,8 +252,8 @@ def apply_updated_routers(routers, updates):
             routers[u].neighbors[v] = cost
             routers[v].neighbors[u] = cost
     
-    for router in routers.values():
-        router.initialize_router(routers)
+    #for router in routers.values():
+     #   router.initialize_router(routers)
 
 #Creating the main function.
 if __name__ == "__main__":
@@ -270,14 +270,14 @@ if __name__ == "__main__":
         # Acessing the apply_updated_routers
         apply_updated_routers(routers, updates_array)
         # Uisng the for loop to reinisilize the routers after the updates occurs.
-        for router in routers.values():
-            router.initialize_router(routers)
+        #for router in routers.values():
+         #   router.initialize_router(routers)
 
         # Adding the for loop so it prints the current_timestamps after the updates.
-        current_timestamp -= 1
-        for router_name in sorted(routers):
-            routers[router_name].printing_distance_table(routers, current_timestamp)
-        current_timestamp += 1
+        # current_timestamp -= 1
+        #for router_name in sorted(routers):
+         #   routers[router_name].printing_distance_table(routers, current_timestamp)
+        #current_timestamp += 1
         
         # Acessing the run_DistanceVector_algorithm
         current_timestamp = run_DistanceVector_algorithm(routers, starting_time=current_timestamp)
