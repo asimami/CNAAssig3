@@ -177,65 +177,37 @@ def prase_network_input():
 # Creating the function with name run_DistanceVector_alogrithm that run the DV algo until no more router chnaging in routing table anymore.
 def run_DistanceVector_algorithm(routers, starting_time=0):
     time_step = starting_time #Inisiling the time_step to zero
-    #converged = False
+    converged = False
 
     #while True:
     for router_name in sorted(routers):
         routers[router_name].printing_distance_table(routers, time_step)
     time_step += 1
 
-    # Using the for loop to initilize the routing cost table and distance table for individual routers.
-    #for router in routers.values():
-        #router.routing_cost = {}
-        #router.distance_table = defaultdict(dict)
-     #   router.initialize_router(routers)
 
-    #time_step = starting_time #Inisiling the time_step to zero
-    # routing_converged = False #Initilising the routing_converged to flase.
-    #time_step = 0 #Inisiling the time_step to zero
+    while not converged:
+        # Creating the variable update_array with empty arry.
+        any_updates_array = False
 
-    # all_tables = []
-    #Using the while loop to iterater over all teh routers until theere are no updates in the routing table.
-    # while not routing_converged:
-    while True:
 
         advertised_costs = {
             router_name: dict(router.routing_cost)
             for router_name, router in routers.items()
         }
-        # snapshot = {}
-        # for router_name in sorted(routers):
-            # snapshot[router_name] = dict(routers[router_name].routing_cost)
-        # all_tables.append(snapshot)
 
-        # Creating the variable update_array with empty arry.
-        any_updates_array = False
-        #previous_cost = {r.router_name: dict(r.routing_cost) for r in routers.values()}
         # Using the for loop for updating the routing cost eveytime.
         
         for router in routers.values():
             if router.updating_routing_cost(advertised_costs):
                 any_updates_array = True
+
+        if any_updates_array:
+            for router_name in sorted(routers):
+                routers[router_name].printing_distance_table(routers, time_step)
+            time_step += 1 #Incrementing the time_step by 1
         
-
-        
-        if not any_updates_array:
-            #converged = True
-            break
-
-        for router_name in sorted(routers):
-            routers[router_name].printing_distance_table(routers, time_step)
-        time_step += 1 #Incrementing the time_step by 1
-
-        
-        #for r in routers.values():
-         #   if r.routing_cost != previous_cost[r.router_name]:
-          #      updates_array.append(True)
-        #routing_converged = not any(updates_array) #The network gets converged when there is no update avaliable in the routing table.
-
-    #Displaying the final routing tbale after all the converged has been succefully completed.
-    #for router_name in sorted(routers):
-     #   routers[router_name].printing_routing_table(routers)
+        else:
+            converged = True
 
     return time_step
 
@@ -296,12 +268,6 @@ if __name__ == "__main__":
         # Uisng the for loop to reinisilize the routers after the updates occurs.
         for router in routers.values():
             router.initialize_router(routers)
-
-        # Adding the for loop so it prints the current_timestamps after the updates.
-        # current_timestamp -= 1
-        for router_name in sorted(routers):
-            routers[router_name].printing_distance_table(routers, current_timestamp)
-        current_timestamp += 1
         
         # Acessing the run_DistanceVector_algorithm
         current_timestamp = run_DistanceVector_algorithm(routers, starting_time=current_timestamp)
