@@ -292,8 +292,8 @@ if __name__ == "__main__":
         # Acessing the apply_updated_routers
         apply_updated_routers(routers, updates_array)
         # Uisng the for loop to reinisilize the routers after the updates occurs.
-        #for router in routers.values():
-         #   router.initialize_router(routers)
+        for router in routers.values():
+            router.initialize_router(routers)
 
         # Adding the for loop so it prints the current_timestamps after the updates.
         # current_timestamp -= 1
