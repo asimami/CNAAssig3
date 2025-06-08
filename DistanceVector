@@ -217,14 +217,16 @@ def run_DistanceVector_algorithm(routers, starting_time=0):
             if router.updating_routing_cost(advertised_costs):
                 any_updates_array = True
         
-        for router_name in sorted(routers):
-            routers[router_name].printing_distance_table(routers, time_step)
-        time_step += 1 #Incrementing the time_step by 1
 
         
         if not any_updates_array:
             #converged = True
             break
+
+        for router_name in sorted(routers):
+            routers[router_name].printing_distance_table(routers, time_step)
+        time_step += 1 #Incrementing the time_step by 1
+
         
         #for r in routers.values():
          #   if r.routing_cost != previous_cost[r.router_name]:
@@ -297,9 +299,9 @@ if __name__ == "__main__":
 
         # Adding the for loop so it prints the current_timestamps after the updates.
         # current_timestamp -= 1
-        #for router_name in sorted(routers):
-         #   routers[router_name].printing_distance_table(routers, current_timestamp)
-        #current_timestamp += 1
+        for router_name in sorted(routers):
+            routers[router_name].printing_distance_table(routers, current_timestamp)
+        current_timestamp += 1
         
         # Acessing the run_DistanceVector_algorithm
         current_timestamp = run_DistanceVector_algorithm(routers, starting_time=current_timestamp)
