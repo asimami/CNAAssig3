@@ -177,7 +177,7 @@ def prase_network_input():
 # Creating the function with name run_DistanceVector_alogrithm that run the DV algo until no more router chnaging in routing table anymore.
 def run_DistanceVector_algorithm(routers, starting_time=0):
     time_step = starting_time #Inisiling the time_step to zero
-    converged = False
+    #converged = False
 
     #while True:
     for router_name in sorted(routers):
@@ -185,15 +185,15 @@ def run_DistanceVector_algorithm(routers, starting_time=0):
     time_step += 1
 
 
-    while not converged:
-        # Creating the variable update_array with empty arry.
-        any_updates_array = False
-
+    while True:
 
         advertised_costs = {
             router_name: dict(router.routing_cost)
             for router_name, router in routers.items()
         }
+
+        # Creating the variable update_array with empty arry.
+        any_updates_array = False
 
         # Using the for loop for updating the routing cost eveytime.
         
@@ -201,14 +201,13 @@ def run_DistanceVector_algorithm(routers, starting_time=0):
             if router.updating_routing_cost(advertised_costs):
                 any_updates_array = True
 
-        if any_updates_array:
-            for router_name in sorted(routers):
-                routers[router_name].printing_distance_table(routers, time_step)
-            time_step += 1 #Incrementing the time_step by 1
+        for router_name in sorted(routers):
+            routers[router_name].printing_distance_table(routers, time_step)
+        time_step += 1 #Incrementing the time_step by 1
         
-        else:
-            converged = True
 
+        if not any_updates_array:
+            break
     return time_step
 
 def printing_final_routing_table(routers):
