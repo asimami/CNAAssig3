@@ -265,12 +265,6 @@ if __name__ == "__main__":
         # Acessing the apply_updated_routers
         apply_updated_routers(routers, updates_array)
                 
-        for router in routers.values():
-            router.initialize_router(routers)
-
-        # Uisng the for loop to reinisilize the routers after the updates occurs.
-  
-
         # Acessing the run_DistanceVector_algorithm
         current_timestamp = run_DistanceVector_algorithm(routers, starting_time=current_timestamp)
         printing_final_routing_table(routers)
