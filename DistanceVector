@@ -181,19 +181,19 @@ def run_DistanceVector_algorithm(routers, starting_time=0):
         # all_tables.append(snapshot)
 
         # Creating the variable update_array with empty arry.
-        updates_array = False
+        any_updates_array = False
         #previous_cost = {r.router_name: dict(r.routing_cost) for r in routers.values()}
         # Using the for loop for updating the routing cost eveytime.
         for router in routers.values():
             if router.updating_routing_cost(routers):
-                updates_array = True
+                any_updates_array = True
         
         for router_name in sorted(routers):
             routers[router_name].printing_distance_table(routers, time_step)
         time_step += 1 #Incrementing the time_step by 1
 
         
-        if not updates_array:
+        if not any_updates_array:
             converged = True
             #break
         
