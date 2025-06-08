@@ -69,13 +69,19 @@ class Router:
                 cost_from_neighbor = advertised_costs[neighbor].get(destination_router, INF)
                 if cost_from_neighbor < INF:
                     final_cost = cost_to_neighbor + cost_from_neighbor
-                    self.distance_table[destination_router][neighbor] = final_cost            
+                    #self.distance_table[destination_router][neighbor] = final_cost            
                 # Using the if condition to cehck if the cost is better then previous cost.
-                    if final_cost < minimum_cost or (final_cost == minimum_cost and (next_hop is None or neighbor < next_hop)):
-                        minimum_cost = final_cost
-                        next_hop = neighbor
+                    #if final_cost < minimum_cost or (final_cost == minimum_cost and (next_hop is None or neighbor < next_hop)):
+                     #   minimum_cost = final_cost
+                      #  next_hop = neighbor
                 else:
-                    self.distance_table[destination_router][neighbor] = INF
+                    final_cost = INF
+                self.distance_table[destination_router][neighbor] = final_cost
+
+
+                if final_cost < minimum_cost:
+                    minimum_cost = final_cost
+                    next_hop = neighbor
 
             # If the minimum cost is found update the cost in the tbale
             if self.routing_cost.get(destination_router, INF) != minimum_cost:
@@ -248,6 +254,12 @@ def apply_updated_routers(routers, updates):
         if cost == -1:
             routers[u].neighbors.pop(v, None)
             routers[v].neighbors.pop(u, None)
+
+            for dest in routers[u].distance_table:
+                routers[u].distance_table[dest][v] = INF
+            for dest in routers[v].distance_table:
+                routers[v].distance_table[dest][u] = INF
+
         # If its not -1 then make the path bidriecrtional.
         else:
             routers[u].neighbors[v] = cost
@@ -271,8 +283,8 @@ if __name__ == "__main__":
         # Acessing the apply_updated_routers
         apply_updated_routers(routers, updates_array)
         # Uisng the for loop to reinisilize the routers after the updates occurs.
-        for router in routers.values():
-            router.initialize_router(routers)
+        #for router in routers.values():
+         #   router.initialize_router(routers)
 
         # Adding the for loop so it prints the current_timestamps after the updates.
         # current_timestamp -= 1
