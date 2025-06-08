@@ -47,17 +47,17 @@ class Router:
             self.routing_cost[neighbor] = cost
             self.distance_table[neighbor][neighbor] = cost
     # Creating the function with name updating_routing_cost which updates the routing cost everytime when find shortest path.
-    def updating_routing_cost(self, router_network):
+    def updating_routing_cost(self, advertised_costs):
         table_updated = False #Putting the update false inisilly
 
-        advertised_costs = {
-            neighbor: dict(router_network[neighbor].routing_cost)
-            for neighbor in self.neighbors
-        }
+        #advertised_costs = {
+         #   neighbor: dict(router_network[neighbor].routing_cost)
+          #  for neighbor in self.neighbors
+        #}
 
 
         # Using the for loop to iterato over all the routers present in the network.
-        for destination_router in router_network:
+        for destination_router in advertised_costs:
             if destination_router == self.router_name:
                 continue
             # Inisliign the minmimum_cost anf tthe next hop
@@ -189,6 +189,11 @@ def run_DistanceVector_algorithm(routers, starting_time=0):
     #Using the while loop to iterater over all teh routers until theere are no updates in the routing table.
     # while not routing_converged:
     while True:
+
+        advertised_costs = {
+            router_name: dict(router.routing_cost)
+            for router_name, router in routers.items()
+        }
         # snapshot = {}
         # for router_name in sorted(routers):
             # snapshot[router_name] = dict(routers[router_name].routing_cost)
@@ -200,7 +205,7 @@ def run_DistanceVector_algorithm(routers, starting_time=0):
         # Using the for loop for updating the routing cost eveytime.
         
         for router in routers.values():
-            if router.updating_routing_cost(routers):
+            if router.updating_routing_cost(advertised_costs):
                 any_updates_array = True
         
         for router_name in sorted(routers):
