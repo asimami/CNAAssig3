@@ -267,6 +267,10 @@ if __name__ == "__main__":
         # Uisng the for loop to reinisilize the routers after the updates occurs.
         for router in routers.values():
             router.initialize_router(routers)
+
+        for router_name in sorted(routers):
+            routers[router_name].printing_distance_table(routers, current_timestamp)
+        current_timestamp += 1
         
         # Acessing the run_DistanceVector_algorithm
         current_timestamp = run_DistanceVector_algorithm(routers, starting_time=current_timestamp)
