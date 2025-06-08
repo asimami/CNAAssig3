@@ -50,6 +50,12 @@ class Router:
     def updating_routing_cost(self, router_network):
         table_updated = False #Putting the update false inisilly
 
+        advertised_costs = {
+            neighbor: dict(router_network[neighbor].routing_cost)
+            for neighbor in self.neighbors
+        }
+
+
         # Using the for loop to iterato over all the routers present in the network.
         for destination_router in router_network:
             if destination_router == self.router_name:
@@ -60,13 +66,17 @@ class Router:
             # Using the for loop to check the cost to reach the destination router via each neighbours present in the network.
             for neighbor in sorted(self.neighbors):
                 cost_to_neighbor = self.neighbors[neighbor]
-                cost_from_neighbor = router_network[neighbor].routing_cost.get(destination_router, INF)
-                final_cost = cost_to_neighbor + cost_from_neighbor
-                self.distance_table[destination_router][neighbor] = final_cost
+                cost_from_neighbor = advertised_costs[neighbor].get(destination_router, INF)
+                if cost_from_neighbor < INF:
+                    final_cost = cost_to_neighbor + cost_from_neighbor
+                    self.distance_table[destination_router][neighbor] = final_cost            
                 # Using the if condition to cehck if the cost is better then previous cost.
-                if final_cost < minimum_cost or (final_cost == minimum_cost and (next_hop is None or neighbor < next_hop)):
-                    minimum_cost = final_cost
-                    next_hop = neighbor
+                    if final_cost < minimum_cost or (final_cost == minimum_cost and (next_hop is None or neighbor < next_hop)):
+                        minimum_cost = final_cost
+                        next_hop = neighbor
+                else:
+                    self.distance_table[destination_router][neighbor] = INF
+
             # If the minimum cost is found update the cost in the tbale
             if self.routing_cost.get(destination_router, INF) != minimum_cost:
                 self.routing_cost[destination_router] = minimum_cost
